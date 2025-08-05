@@ -1,0 +1,155 @@
+---
+title: "Troubleshooting Common Setup Issues"
+description: "Resolve the most frequent installation and configuration hiccups with this concise troubleshooting guide. Whether it's missing dependencies, server start failures, or integration errors, find practical solutions to get back on track quickly."
+---
+
+# Troubleshooting Common Setup Issues
+
+Experience smooth onboarding with this targeted troubleshooting guide. Below you'll find practical solutions for frequent installation, configuration, and startup challenges encountered while setting up the Python Testing Tools MCP Server.
+
+---
+
+## 1. Installation Problems
+
+### Issue: `pip install baml` fails or reports missing packages
+
+- **Cause**: Missing or outdated Python version, or network restrictions.
+- **Solution:**
+  1. Verify you are running Python 3.12 as required:
+     ```bash
+     python --version
+     ```
+  2. Upgrade pip and setuptools:
+     ```bash
+     python -m pip install --upgrade pip setuptools
+     ```
+  3. Retry installing `baml`:
+     ```bash
+     pip install baml
+     ```
+  4. If behind a proxy, configure pip accordingly or try a different network.
+
+<Tip>
+Always install dependencies inside a virtual environment to avoid conflicts with system packages.
+</Tip>
+
+### Issue: `uv sync` fails during dependency installation
+
+- **Cause:** Network issues, missing build tools, or incompatible package versions.
+- **Solution:**
+  - Check your network connectivity.
+  - Ensure you have necessary build tools installed (`build-essential` on Linux, Xcode CLI on macOS).
+  - Review error messages for specific missing packages and install prerequisites.
+  - Retry `uv sync`.
+
+---
+
+## 2. Environment Variable Configuration Issues
+
+### Issue: Server cannot authenticate with Gemini API
+
+- **Cause:** Missing or incorrect `GEMINI_API_KEY` environment variable.
+- **Solution:**
+  1. Verify the API key is set in your shell environment:
+     ```bash
+     echo $GEMINI_API_KEY
+     ```
+  2. If empty or incorrect, export your key:
+     ```bash
+     export GEMINI_API_KEY="your-api-key-here"
+     ```
+  3. Restart your shell or IDE to apply changes.
+  4. Confirm configuration by running a test command (e.g., generating unit tests on a demo file).
+
+<Note>
+For permanent setup, add the export line to your shell profile (`~/.bashrc`, `~/.zshrc`).
+</Note>
+
+### Issue: Using `GEMINI_MODEL` but no effect on requests
+
+- **Cause:** Optional variable is case-sensitive or ignored if empty.
+- **Solution:**
+  - Set `GEMINI_MODEL` explicitly if required:
+    ```bash
+    export GEMINI_MODEL="gemini-2.5-flash"
+    ```
+  - Ensure the server is restarted after environment variable updates.
+
+---
+
+## 3. Starting the Server Failures
+
+### Issue: Server does not start or crashes immediately
+
+- **Cause:** Dependency conflicts, environment misconfiguration, missing files.
+- **Troubleshooting Steps:**
+  1. Check Python version is 3.12 (as per `.python-version`).
+  2. Verify dependencies are installed using `uv sync`.
+  3. Run manually to see error output:
+     ```bash
+     uv run python python_testing_mcp_server.py
+     ```
+  4. Check log output for missing environment variables or import errors.
+  5. Confirm you are in the correct project directory containing all necessary files.
+
+### Issue: Server starts but does not accept requests
+
+- **Cause:** Incorrect integration or communication issues.
+- **Solutions:**
+  - Ensure the MCP server is properly registered in Claude Code or your client environment.
+  - For Claude Code native MCP command, verify commands run without error (see [Connecting to Claude Code & Other Integrations](../getting-started/first-run-usage-validation/connecting-integrations)).
+  - Check firewall or network settings blocking communication.
+
+---
+
+## 4. Integration Errors
+
+### Issue: MCP server not recognized or disconnected in Claude Code
+
+- **Cause:** Incorrect MCP registration or environment variable propagation.
+- **Fix:**
+  1. Run `claude mcp list` to view registered MCP servers.
+  2. If missing, add the server using:
+     ```bash
+     claude mcp add python_testing_tools --env GEMINI_API_KEY=your-api-key-here -- uv run python python_testing_mcp_server.py
+     ```
+  3. Restart Claude Code.
+  4. Verify with `/mcp` command in Claude Code.
+
+### Issue: Commands fail with authentication or API errors
+
+- **Cause:** Invalid or expired Gemini API key.
+- **Solution:**
+  - Generate a new API key and update the environment variable.
+  - Confirm no extra spaces or quotes around the key.
+
+---
+
+## 5. Common Pitfalls and Best Practices
+
+- Always run in a **Python 3.12 virtual environment** matching the project requirements.
+- Install dependencies **before** running the server.
+- Keep environment variables **exported in your shell session and IDE settings** consistently.
+- Restart the server **after any configuration changes**.
+- Use **demo files** provided in `demo/` to validate your setup before testing your own projects.
+- Reference detailed logs and error messages to pinpoint problems early.
+
+<Warning>
+Avoid editing generated `baml_client/` code manually; use `baml-cli generate` to regenerate after changes.
+</Warning>
+
+---
+
+## 6. Getting Additional Help
+
+- Review the [Installation Steps](../getting-started/setup-prerequisites-installation/installation-steps) and [Starting the Server](../getting-started/first-run-usage-validation/starting-the-server) guides.
+- Consult the [README.md](../../README.md) for general overview and setup.
+- Join our community channels:
+  - GitHub Issues: https://github.com/jazzberry-ai/python-testing-mcp/issues
+  - Discord: https://boundaryml.com/discord
+
+---
+
+By following this guide, you will quickly identify and resolve the most common setup issues, ensuring the Python Testing Tools MCP Server runs seamlessly for your AI-powered Python testing workflows.
+
+---

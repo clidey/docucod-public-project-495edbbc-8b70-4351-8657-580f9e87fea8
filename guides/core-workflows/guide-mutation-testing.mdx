@@ -1,0 +1,269 @@
+---
+title: "Applying Mutation Testing for Test Quality Analysis"
+description: "Walk through intelligent mutation testing—generating code mutations, analyzing your suite's strengths and weaknesses, and understanding actionable recommendations from AI. Includes a real-world scenario on identifying gaps in test coverage and refining your suite."
+---
+
+# Applying Mutation Testing for Test Quality Analysis
+
+Welcome to the comprehensive guide on applying mutation testing using the Python Testing Tools MCP Server. This page helps you understand how to generate code mutations, assess the effectiveness of your test suite, and leverage AI-powered insights to improve coverage and test quality.
+
+---
+
+## 1. What You Will Achieve
+
+Mutation testing is a powerful technique to evaluate the strength of your existing test suite by introducing small, systematic changes (mutations) to your source code and verifying if your tests catch these changes. This guide walks you through the *intelligent mutation testing* workflow, showing how to:
+
+- Generate meaningful mutants using AST-based mutation operators
+- Execute tests against each mutation safely with automatic rollback
+- Identify survived mutations where tests failed to detect changes
+- Analyze survived mutations with AI for actionable recommendations
+- Interpret mutation score and test suite quality
+- Use AI suggestions to prioritize and create improved test cases
+
+By following the steps here, you deepen your test coverage, identify blind spots, and make your Python code more robust and reliable.
+
+---
+
+## 2. Prerequisites
+
+Before starting mutation testing, ensure you have:
+
+- Python 3.8+ installed and your project configured for testing
+- Existing test files for your Python code (preferably named with `test_` prefixes or using `pytest` or `unittest`)
+- The Python Testing Tools MCP Server installed and running (see [Installation and Initial Setup](/guides/getting-started/installation-setup))
+- Your Python module ready for mutation testing (file with `.py` extension)
+
+> If you don't have tests yet, the mutation testing tool can still generate mutations for analysis only, but full testing requires test files.
+
+---
+
+## 3. Workflow Overview
+
+### Time Estimate
+15–30 minutes per tested module (varies by test complexity and mutation count).
+
+### Difficulty Level
+Intermediate — basic familiarity with Python testing and command-line operations.
+
+---
+
+## 4. Step-by-Step Instructions
+
+Follow these steps to run intelligent mutation testing and interpret the results:
+
+### Step 1: Prepare Your Python File
+
+- Confirm your target Python file (`example.py`) exists and includes functions you want to test.
+- Make sure related test files exist (e.g., `test_example.py`) in the same directory or a `tests/` folder.
+
+### Step 2: Run Mutation Testing
+
+Use the command line (or invoke via the MCP interface) to start mutation testing:
+
+```bash
+uv run python -c "from tools.mutation_tester import run_mutation_testing; print(run_mutation_testing('path/to/example.py'))"
+```
+
+- You can specify an optional test command if auto-detection fails:
+
+```python
+run_mutation_testing('path/to/example.py', test_command='pytest tests/test_example.py -v')
+```
+
+- Adjust the max mutations parameter as needed (default is 15).
+
+### Step 3: Understand the Process Outputs
+
+- The tool generates mutations (changed versions of your code with small syntactic alterations).
+- For each mutation, it runs your tests.
+- If tests fail, the mutation is "killed" (good).
+- If tests pass despite the mutation, the mutation "survived" (possible test gap).
+
+### Step 4: Review the Mutation Testing Report
+
+The output includes:
+
+- Total mutations generated and tested
+- Number of mutations killed vs. survived
+- Mutation score (percentage of mutations detected by your tests)
+- Detailed list and descriptions of survived mutations
+- AI-powered analysis highlighting critical survivors and gaps
+- Prioritized recommendations for new or improved test cases
+
+### Step 5: Action on AI Recommendations
+
+The AI analysis provides:
+
+- Which survived mutations are most dangerous (logic errors, boundary miss)
+- Specific missing edge case tests (error handling, boundary values)
+- Concrete test case suggestions: inputs, expected outputs, and assertions
+
+Use these insights to add targeted tests improving your suite’s ability to detect subtle bugs.
+
+### Step 6: Repeat Mutation Testing After Improvements
+
+After adding the recommended test cases:
+
+- Re-run mutation testing.
+- Verify mutation score improves (target 80%+).
+- Iterate until mutation testing indicates strong coverage.
+
+
+---
+
+## 5. Real-World Scenario: Identifying Gaps in Test Coverage
+
+Imagine you have a function `calculate_discount(price, customer_type)` with existing tests. Mutation testing may generate mutations such as changing operators (`==` to `!=`), negated conditions, or modified constants.
+
+If a mutation where `customer_type == 'VIP'` is changed to `customer_type != 'VIP'` survives, it reveals your tests don't check VIP-specific pricing rules sufficiently.
+
+The AI analysis would then highlight this mutation as critical, explain the potential bug (mistakenly applying wrong discounts), and recommend test cases..
+
+Example recommendation from the AI might be:
+
+```plaintext
+Test: test_vip_customer_discount
+Input: price=100, customer_type='VIP'
+Expected: discount applied correctly
+Assertion: assert calculate_discount(100, 'VIP') == expected_discount
+```
+
+Adding this test closes the gap and strengthens your coverage.
+
+---
+
+## 6. Tips and Best Practices
+
+- **Backup Code**: Mutation testing writes to your source file temporarily. The tool automatically restores the original file after tests, but ensure you use version control for safety.
+- **Start Small**: Use the default max mutations parameter to limit test run time. Increase after confidence.
+- **Maintain Clear Test Naming**: Good test names help in identifying what mutation gap they fill.
+- **Combine with Other Testing Tools**: Mutation testing complements unit test generation, fuzz testing, and coverage testing.
+- **Integrate into CI/CD**: Automate mutation testing runs as quality gates.
+
+---
+
+## 7. Common Issues & Troubleshooting
+
+<AccordionGroup title="Mutation Testing Troubleshooting">
+<Accordion title="No Test Files Found">
+If no test files are detected, mutation testing will only generate mutations for analysis, but won’t run tests. Create tests with a recognized naming convention (e.g., `test_*.py`) in the same folder or `tests/`.
+</Accordion>
+
+<Accordion title="Test Command Not Specified or Failing">
+Auto-detection of test commands might fail for custom setups. Specify your test command explicitly using the `test_command` parameter. Ensure your test command exits with zero on pass and non-zero on failure.
+</Accordion>
+
+<Accordion title="Timeouts or Slow Runs">
+Mutation testing runs tests multiple times, which can be slow. Limit maximum mutations during initial runs. Optimize your tests for speed, or split mutation testing by modules.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 8. Example Mutation Report Snippet
+
+```markdown
+# Mutation Testing Report
+
+**File:** `example.py`
+**Mutation Score:** 65.0% (13/20 mutations killed)
+
+## Summary
+- Total Possible Mutations: 50
+- Mutations Tested: 20
+- Mutations Killed: 13 ✅
+- Mutations Survived: 7 ⚠️
+
+## Quality Assessment
+✅ Good - Your test suite is solid but has some gaps to address.
+
+## Survived Mutations (7)
+
+### 1. comparison '==' → comparison '!='
+- Line: 25
+- Operator: BinaryOperatorMutator
+- Issue: Tests passed even with this mutation
+
+...
+
+## 🤖 AI Analysis
+
+### Critical Issues
+- Mutation changing `if value == 0` to `if value != 0` exposes missing zero-value test
+
+### Recommended Test Cases
+1. Add test for zero input handling in `process_value()`
+
+### Assessment Summary
+Tests miss key boundary checks, especially zero and error cases. Prioritize boundary inputs and error handling tests.
+
+## 🎯 Next Steps
+1. Review survived mutations and AI recommendations
+2. Add specific tests for boundary cases
+3. Re-run mutation testing to improve coverage
+```
+
+---
+
+## 9. Integration and Next Steps
+
+- Combine mutation testing with unit test generation ([Guide: Automating Python Unit Test Generation](/guides/core-workflows/guide-unit-testing)) for rapid test suite growth.
+- Use in conjunction with fuzz testing to check robustness ([Guide: Fuzz Testing Functions with AI-Generated Inputs](/guides/core-workflows/guide-fuzz-testing)).
+- Incorporate into CI/CD pipelines for automated quality gates ([Guide: Integrating MCP Testing Tools with CI/CD Pipelines](/guides/advanced-usage/integration-ci)).
+
+For installation, configuration, and server startup, see:
+- [Installation and Initial Setup](/guides/getting-started/installation-setup)
+- [Starting the Server](/getting-started/first-run-usage-validation/starting-the-server)
+
+---
+
+## 10. References & Resources
+
+- [Mutation Testing Internals](https://github.com/jazzberry-ai/python-testing-mcp/blob/main/utils/mutation_engine.py) (Mutation operators and engine details)
+- [Mutation Test Executor](https://github.com/jazzberry-ai/python-testing-mcp/blob/main/utils/mutation_test_executor.py)
+- [AI-Powered Mutation Analysis](https://github.com/jazzberry-ai/python-testing-mcp/blob/main/utils/mutation_intelligence.py)
+- [BAML Mutation Analysis Prompt](../baml_src/main.baml#L144)
+
+
+---
+
+<Check>
+Ensure you have saved your work and committed any changes before running mutation testing.
+</Check>
+
+
+---
+
+#### Feedback or questions? Refer to the project GitHub or community forums.
+
+---
+
+# Visual Workflow Diagram
+
+```mermaid
+flowchart TD
+
+  Start([Start Mutation Testing]) --> CheckFile[Check Python file exists & readable]
+  CheckFile -->|No| ErrorFileNotFound[Show error: File not found]
+  CheckFile -->|Yes| DetectTests[Detect test files for target]
+
+  DetectTests -->|No tests| GenerateAnalysisOnly[Generate mutations, no test execution]
+  DetectTests -->|Tests found| GenerateMutations[Generate code mutations using AST]
+
+  GenerateAnalysisOnly --> ReportAnalysisOnly[Generate analysis-only mutation report]
+  GenerateMutations --> RunTests[Run tests against each mutation]
+
+  RunTests --> CollectResults[Collect mutation outcomes (killed/survived)]
+  CollectResults --> AIAnalysis[Analyze survived mutations with AI]
+
+  AIAnalysis --> GenerateReport[Generate detailed mutation testing report]
+  GenerateReport --> End([End])
+
+  ErrorFileNotFound --> End
+  ReportAnalysisOnly --> End
+
+  classDef decision fill:#f9f,stroke:#333,stroke-width:2px;
+  CheckFile,DetectTests decision;
+```
+
+

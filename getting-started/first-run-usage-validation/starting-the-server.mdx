@@ -1,0 +1,226 @@
+---
+title: "Starting the Server"
+description: "Step-by-step guide on launching the MCP server for the first time, including platform-related nuances and command examples. Feel confident that your server is running and ready to accept requests."
+---
+
+# Starting the Server
+
+Welcome to your first step in running the Python Testing Tools MCP Server. This guide walks you through the essential process of launching the MCP server, making sure you confidently get it running on your system, whether you're working locally, on Claude Code, or a supported CI/CD environment.
+
+---
+
+## 1. Preparing to Launch
+
+Before starting the server, ensure that you have completed the necessary prerequisites and configuration steps:
+
+- **System readiness:** Confirm your OS and Python environment meet the requirements outlined in the [System Requirements & Prerequisites](../setup-prerequisites-installation/system-requirements).
+- **Installation:** Install dependencies and tools as described in the [Installation Steps](../setup-prerequisites-installation/installation-steps).
+- **Configuration:** Set your Gemini API key and optionally your Gemini model in environment variables following the instructions in [Configuration & API Key Setup](../setup-prerequisites-installation/configuration-setup).
+
+
+<Tip>
+Running the server without setting the `GEMINI_API_KEY` will cause authentication failures when generating AI-powered tests. Ensure this key is exported correctly before launching.
+</Tip>
+
+## 2. Launching the MCP Server Locally
+
+You can start the server easily using the `uv` command, which manages your Python environment and runs the server.
+
+### Steps:
+
+<Steps>
+<Step title="Navigate to your project directory">
+Open your terminal and change directory to where your Python Testing MCP Server code resides:
+
+```bash
+cd /path/to/python-testing-mcp
+```
+</Step>
+
+<Step title="Run the server using uv">
+Execute the following command to launch the MCP server:
+
+```bash
+uv run python python_testing_mcp_server.py
+```
+
+This command creates a virtual environment if necessary, installs dependencies as needed, and runs the MCP server.
+</Step>
+
+<Step title="Verify the server has started">
+You should see terminal output indicating the server is running and listening for MCP requests. The prompt will not return until the server stops.
+
+Example successful startup output might include lines such as:
+
+```
+Starting MCP server: python_testing_tools
+Listening for requests...
+```
+
+If there are errors, check your environment variables and Python installation.
+</Step>
+</Steps>
+
+<Warning>
+If you see errors related to missing modules or Python version incompatibilities, revisit the [Installation Steps](../setup-prerequisites-installation/installation-steps) and ensure your environment matches the defined requirements.
+</Warning>
+
+## 3. Launching the Server Using Claude Code
+
+Claude Code natively supports MCP servers. To integrate the Python Testing Tools MCP Server:
+
+### Recommended Setup (Claude Code Native MCP Command)
+
+<Steps>
+<Step title="Change to the project folder">
+
+```bash
+cd /path/to/python-testing-mcp
+```
+
+</Step>
+
+<Step title="Ensure dependencies are synced">
+
+```bash
+uv sync
+```
+
+</Step>
+
+<Step title="Add the MCP server to Claude Code">
+
+Replace `'your-api-key-here'` with your actual Gemini API key:
+
+```bash
+claude mcp add python_testing_tools --env GEMINI_API_KEY=your-api-key-here -- uv run python python_testing_mcp_server.py
+```
+
+</Step>
+
+<Step title="Verify the MCP server connection">
+
+Run:
+
+```bash
+claude mcp list
+```
+
+You should see:
+
+```
+python_testing_tools: uv run python python_testing_mcp_server.py - ✓ Connected
+```
+
+</Step>
+</Steps>
+
+### Alternative Method: Using FastMCP
+
+If you prefer FastMCP's installer:
+
+```bash
+uv run fastmcp install python_testing_mcp_server.py --env-var GEMINI_API_KEY=your-api-key-here
+```
+
+> Note: Use this method only if Claude Code is detected; otherwise, prefer the native approach.
+
+### Manual Configuration
+
+If automation doesn’t work, manually add the MCP server configuration to `.claude.json` in your project or home directory:
+
+```json
+{
+  "/path/to/your/project": {
+    "mcpServers": {
+      "python_testing_tools": {
+        "type": "stdio",
+        "command": "uv",
+        "args": [
+          "run",
+          "python",
+          "/path/to/your/project/python_testing_mcp_server.py"
+        ],
+        "env": {
+          "GEMINI_API_KEY": "your-api-key-here"
+        }
+      }
+    }
+  }
+}
+```
+
+After saving, restart Claude Code and confirm the server connects.
+
+## 4. Verifying the Server is Ready
+
+Once the MCP server is running, confirm it is ready to accept requests:
+
+- For Claude Code, use the `/mcp` command to list servers and their status.
+  
+- Locally, you can test the server by invoking one of the available tools via direct client calls or through demo commands described in the README.
+
+### Example validation command (in Claude Code or compatible CLI):
+
+```bash
+create unit tests for @demo/basic_example_functions.py
+```
+
+A successful response indicates your server is correctly running.
+
+<Check>
+If commands time out or fail, check:
+- Your network connectivity for external AI API calls
+- Environment variable settings
+- Any error logs in your terminal
+</Check>
+
+## 5. Platform-Specific Notes
+
+- **Windows Users**: Ensure PowerShell or Command Prompt has the correct environment variables set or use a `.env` manager.
+- **macOS/Linux**: Use `export GEMINI_API_KEY='your-api-key'` in your shell profile.
+- **CI/CD Environments**: Set environment variables securely, and use the manual or FastMCP setup commands in pipeline scripts.
+
+## 6. Troubleshooting Common Startup Issues
+
+<AccordionGroup title="Common Startup Problems and Solutions">
+<Accordion title="Server Doesn’t Start or Hangs">
+- Verify Python version (`python --version`) is 3.8 or higher.
+- Check for missing dependencies and run `uv sync`.
+- Confirm no other server processes are using the same ports.
+</Accordion>
+
+<Accordion title="Authentication Failures">
+- Ensure the `GEMINI_API_KEY` is set and not expired.
+- Confirm the key is valid for the required Google Gemini services.
+- If behind a proxy, check network permissions.
+</Accordion>
+
+<Accordion title="Commands Not Recognized in Claude Code">
+- Ensure the MCP server is correctly added in Claude Code (`claude mcp add ...`).
+- Restart Claude Code after configuration changes.
+- Use `claude mcp list` to verify connection status.
+</Accordion>
+
+<Accordion title="Environment Variables Not Passing Through">
+- For local shells, double-check export syntax.
+- For automated environments, ensure environment injection matches your shell.
+- Avoid typos and trailing spaces in variable names.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## Next Steps
+
+- After your server is running and accepting requests, visit the [Quick Validation & First Test Run](../first-run-usage-validation/first-successful-validation) guide to walk through executing your first intelligent test.
+- Explore [Connecting to Claude Code & Other Integrations](../first-run-usage-validation/connecting-integrations) to fully leverage MCP capabilities.
+- If you encounter issues, the [Troubleshooting Common Setup Issues](../first-run-usage-validation/troubleshooting) guide will provide deeper diagnostics.
+
+---
+
+For a deeper understanding of how the MCP server fits into your testing workflows, review the [Core Architecture Overview](../../overview/product-intro-and-architecture/core-architecture-overview) and [Core Features at a Glance](../../overview/concepts-features-usecases/core-features-overview).
+
+---
+
+*You are now ready to launch your Python Testing Tools MCP Server with confidence and start harnessing AI-powered Python testing capabilities.*

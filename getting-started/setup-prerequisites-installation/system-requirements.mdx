@@ -1,0 +1,168 @@
+---
+title: "System Requirements & Prerequisites"
+description: "Review essential environment requirements, supported operating systems, Python versions, and necessary external accounts (like Google Gemini API access) before getting started. This ensures a seamless setup experience and prevents common roadblocks."
+---
+
+# System Requirements & Prerequisites
+
+Before diving into installing and running the Python Testing Tools MCP Server, ensuring your environment meets the essential system requirements and prerequisites is critical. This preparation guarantees a smooth installation process and optimal performance of the MCP server's AI-powered testing capabilities.
+
+---
+
+## 1. Supported Operating Systems
+
+The Python Testing Tools MCP Server is designed to run on modern, widely used operating systems:
+
+- **Linux** (Ubuntu 18.04+, Debian, CentOS) — Recommended for production use
+- **macOS** (Catalina 10.15+)
+- **Windows 10+** (with WSL2 recommended for Unix-like environment compatibility)
+
+Ensure your system is fully updated to avoid compatibility issues during installation.
+
+---
+
+## 2. Python Version Compatibility
+
+To run the MCP server and its underlying utilities correctly:
+
+- **Python 3.10 or later** is required.
+- The server leverages new language features and typing improvements present in Python 3.10+.
+
+Verify your Python version with:
+
+```bash
+python3 --version
+```
+
+If required, install or upgrade Python following official guides for your OS.
+
+---
+
+## 3. Environment Requirements
+
+### Virtual Environment (Strongly Recommended)
+
+Create a dedicated virtual environment to isolate dependencies:
+
+```bash
+python3 -m venv mcp_env
+source mcp_env/bin/activate  # Linux/macOS
+mcp_env\Scripts\activate    # Windows
+```
+
+### Disk Space & Memory
+
+- Ensure **at least 500MB free disk space** for installation and cache.
+- Recommended RAM: **4GB minimum**, 8GB+ for smoother AI model operations.
+
+### Dependency Management
+
+The server uses `uv` (Universal Virtualization) for dependency management. It will handle installing all Python packages listed in `pyproject.toml`.
+
+Run:
+
+```bash
+uv sync
+```
+
+This command creates a virtual environment (if needed) and installs the core dependencies, including:
+
+- `fastmcp` (MCP server framework)
+- `baml` and `baml-cli` (for AI prompt generation and parsing)
+- Google Gemini AI client
+- `coverage.py` (for built-in code coverage reporting)
+
+---
+
+## 4. External Account Requirements
+
+To leverage the **Google Gemini AI** services integrated within the MCP server, you must have the following:
+
+### Google Gemini API Access
+
+- **Google Cloud Account** with permissions to access Gemini AI models.
+- Obtain a valid **GEMINI_API_KEY** with the necessary scopes to invoke AI services.
+
+### Setting Up Gemini API Key
+
+Export your Gemini API key as an environment variable:
+
+```bash
+export GEMINI_API_KEY="your-google-gemini-api-key"
+```
+
+On Windows (PowerShell):
+
+```powershell
+setx GEMINI_API_KEY "your-google-gemini-api-key"
+```
+
+You can also define this key permanently in environment configuration files or pass it along in container/CLI execution environments.
+
+### Optional Model Selection
+
+By default, the MCP server uses the `gemini-2.5-flash` AI model. You can specify a different model by setting:
+
+```bash
+export GEMINI_MODEL="desired-model-name"
+```
+
+If unset, the default model will be used.
+
+---
+
+## 5. Network & Connectivity Requirements
+
+- Ensure your machine has **outbound internet access** to communicate with Google Gemini API endpoints.
+- Verify firewall settings allow HTTPS traffic (port 443) outbound.
+- If running behind a proxy, configure your environment variables (e.g., `HTTP_PROXY`, `HTTPS_PROXY`) accordingly.
+
+---
+
+## 6. Key Environment Variables Summary
+
+| Variable Name   | Purpose                                  | Required / Optional | Default Value       |
+|-----------------|------------------------------------------|---------------------|---------------------|
+| `GEMINI_API_KEY`| Your Google Gemini API access key        | Required            | None                |
+| `GEMINI_MODEL`  | AI model to use for test generation       | Optional            | `gemini-2.5-flash`  |
+
+---
+
+## 7. Best Practices and Common Pitfalls
+
+- **Always validate your `GEMINI_API_KEY` before starting the server.** 
+- Avoid running the server with Python versions below 3.10 to prevent compatibility errors.
+- Use a virtual environment to prevent package conflicts.
+- Confirm all dependencies are installed with `uv sync` before proceeding.
+- Set environment variables early to avoid runtime configuration issues.
+
+---
+
+## 8. Verification Checklist Before Installation
+
+Use this checklist to confirm your environment readiness:
+
+- [ ] Running a supported OS (Linux, macOS, Windows with WSL2)
+- [ ] Python 3.10 or later installed and accessible
+- [ ] Virtual environment created and activated
+- [ ] Dependencies installed via `uv sync` successfully
+- [ ] `GEMINI_API_KEY` environment variable set and valid
+- [ ] Network access to Google Gemini APIs verified
+
+Once these are met, proceed to the installation steps in the [Installation Steps Guide](../setup-prerequisites-installation/installation-steps).
+
+---
+
+## Useful Links
+
+- [Installation Steps](../setup-prerequisites-installation/installation-steps) — Next step after confirming prerequisites
+- [Configuration & API Key Setup](../setup-prerequisites-installation/configuration-setup) — How to configure authentication and environment
+- [Product Introduction & Value Proposition](../../overview/product-intro-and-architecture/product-value-proposition) — Understand the product's purpose and capabilities
+
+<Tip>
+Establishing your environment correctly reduces setup time and ensures the MCP server can utilize AI models effectively for your Python testing automation.
+</Tip>
+
+---
+
+For any issues related to environment setup, refer to the [Troubleshooting Common Setup Issues](../first-run-usage-validation/troubleshooting) guide for detailed resolutions.

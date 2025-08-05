@@ -1,0 +1,236 @@
+---
+title: "Connecting to Claude Code & Other Integrations"
+description: "Discover how to connect your MCP server to Claude Code and alternate environments, with tailored setup instructions for each supported workflow. Unlock seamless integration and maximize productivity with the recommended approach for your setup."
+---
+
+# Connecting to Claude Code & Other Integrations
+
+Discover how to connect your MCP server to Claude Code and alternate environments, with tailored setup instructions for each supported workflow. Unlock seamless integration and maximize productivity with the recommended approach for your setup.
+
+---
+
+## 1. Overview
+
+This guide helps you connect the Python Testing Tools MCP Server to Claude Code and other integration environments. Whether you want a seamless native connection or prefer manual configuration, these instructions walk you through key steps to ensure your MCP server runs smoothly and communicates effectively.
+
+By following this guide, you'll enable rapid testing workflows directly from Claude Code or alternative client interfaces.
+
+---
+
+## 2. Prerequisites
+
+Before proceeding, ensure you have:
+
+- Installed the MCP server dependencies (`uv sync`) and run initial setup. See [Installation Steps](/getting-started/setup-prerequisites-installation/installation-steps).
+- Properly configured required environment variables such as `GEMINI_API_KEY`. See [Configuration & API Key Setup](/getting-started/setup-prerequisites-installation/configuration-setup).
+- Claude Code installed and ready for use (for the native integration).
+- Familiarity with basic MCP server operations and CLI commands.
+
+---
+
+## 3. Integration Methods
+
+You can connect the MCP server to Claude Code or other environments using one of the following methods.
+
+### 3.1 Using Claude Code’s Native MCP Command (Recommended)
+
+This is the simplest and most robust way to connect:
+
+<Steps>
+<Step title="Navigate to Your Project Directory">
+Open your terminal and switch to the directory containing the MCP server code:
+
+```bash
+cd /path/to/python-testing-mcp
+```
+</Step>
+
+<Step title="Install Dependencies">
+Ensure all Python dependencies are installed:
+
+```bash
+uv sync
+```
+</Step>
+
+<Step title="Add MCP Server to Claude Code">
+Use the `claude mcp add` command to register the server with your API key included:
+
+```bash
+claude mcp add python_testing_tools --env GEMINI_API_KEY=your-api-key-here -- uv run python python_testing_mcp_server.py
+```
+Replace `your-api-key-here` with your actual Gemini API key.
+</Step>
+
+<Step title="Verify MCP Server Connection">
+Confirm your server is listed as connected:
+
+```bash
+claude mcp list
+```
+You should see output like:
+
+```
+python_testing_tools: uv run python python_testing_mcp_server.py - ✓ Connected
+```
+</Step>
+</Steps>
+
+<Tip>
+This native method ensures seamless command integration, automatic environment variable handling, and stable connection management within Claude Code.
+</Tip>
+
+### 3.2 Using FastMCP (Alternative)
+
+If you prefer or require using the FastMCP tool:
+
+1. Run:
+
+```bash
+uv run fastmcp install python_testing_mcp_server.py --env-var GEMINI_API_KEY=your-api-key-here
+```
+
+2. Confirm FastMCP recognizes the server and environment variables.
+
+> **Note:** If FastMCP cannot auto-detect your Claude Code installation, revert to Method 1 for hassle-free setup.
+
+### 3.3 Manual Configuration
+
+If automated methods are unavailable or unsuitable, configure manually via Claude Code configuration files:
+
+1. Edit or create your `.claude.json` file in your home or project directory.
+
+2. Add an MCP server entry like this:
+
+```json
+{
+  "/path/to/your/project": {
+    "mcpServers": {
+      "python_testing_tools": {
+        "type": "stdio",
+        "command": "uv",
+        "args": ["run", "python", "/path/to/your/project/python_testing_mcp_server.py"],
+        "env": {
+          "GEMINI_API_KEY": "your-api-key-here"
+        }
+      }
+    }
+  }
+}
+```
+
+3. Save and restart Claude Code.
+
+This method gives full control over command execution and environment but requires careful manual management.
+
+---
+
+## 4. Verifying Your Setup
+
+After connecting:
+
+1. Start Claude Code:
+
+```bash
+claude
+```
+
+2. Check MCP server status by typing:
+
+```bash
+/mcp
+```
+
+Look for confirmation such as:
+
+- "Reconnected to python_testing_tools"
+- "Connection established"
+
+3. Try a sample interaction by generating a simple unit test:
+
+```bash
+create unit tests for @demo/basic_example_functions.py
+```
+
+You should receive a response with generated tests.
+
+---
+
+## 5. Example Usage Scenarios
+
+The MCP server's demonstration files let you explore different test generation powers:
+
+| Demo File                   | Typical Commands                                   | Description                                  |
+|----------------------------|--------------------------------------------------|----------------------------------------------|
+| `basic_example_functions.py` | `create unit tests for @demo/basic_example_functions.py`
+`fuzz test the add function in @demo/basic_example_functions.py` | Simple arithmetic and foundational tests     |
+| `advanced_algorithms.py`    | `generate coverage tests for @demo/advanced_algorithms.py`
+`fuzz test the binary_search_with_analytics function in @demo/advanced_algorithms.py`
+`run mutation testing on @demo/advanced_algorithms.py` | Complex algorithmic testing scenarios         |
+| `data_processor.py`         | `create unit tests for @demo/data_processor.py`
+`generate coverage tests for @demo/data_processor.py` | Multi-threaded processing and concurrency     |
+| `security_analyzer.py`      | `generate coverage tests for @demo/security_analyzer.py`
+`run mutation testing on @demo/security_analyzer.py` | Security and defensive validation testing      |
+
+<Tip>
+Running these commands within Claude Code after MCP connection verifies your integration and shows the capabilities tailored to each demo complexity level.
+</Tip>
+
+---
+
+## 6. Troubleshooting
+
+If your MCP server fails to connect or commands do not respond:
+
+- **Check environment variables:** Confirm that `GEMINI_API_KEY` is set correctly.
+- **Verify dependency installation:** Re-run `uv sync` and check for errors.
+- **Validate MCP server process:** Ensure `python_testing_mcp_server.py` runs without error independently.
+- **Check Claude Code logs:** Look for MCP connection errors or warnings.
+- **Restart Claude Code:** Sometimes reconnection requires a full restart.
+- **Try manual MCP listing:** Run `claude mcp list` to check server registration.
+
+<Warning>
+If you encounter permission errors or environment variable issues in your shell, consult your OS documentation to set environment variables persistently.
+</Warning>
+
+---
+
+## 7. Next Steps
+
+After successfully connecting, explore these guides to fully leverage the MCP server's capabilities:
+
+- [Starting the Server](/getting-started/first-run-usage-validation/starting-the-server) - Learn to launch and verify your server.
+- [First Successful Validation](/getting-started/first-run-usage-validation/first-successful-validation) - Run your first test successfully.
+- [Quickstart for Unit Testing](/guides/core-workflows/guide-unit-testing) - Automate Python unit test generation.
+- [Fuzz Testing Guide](/guides/core-workflows/guide-fuzz-testing) - Apply advanced fuzz testing.
+- [Coverage Testing Workflows](/guides/core-workflows/guide-coverage-testing) - Generate coverage-driven test suites.
+- [Mutation Testing Guide](/guides/core-workflows/guide-mutation-testing) - Analyze test suite robustness.
+
+For additional help, consult [Troubleshooting Common Setup Issues](/getting-started/first-run-usage-validation/troubleshooting).
+
+---
+
+## Appendix: Quick Command References
+
+```bash
+# Add MCP server to Claude Code (native command)
+claude mcp add python_testing_tools --env GEMINI_API_KEY=your-api-key-here -- uv run python python_testing_mcp_server.py
+
+# List MCP servers
+claude mcp list
+
+# Start Claude Code CLI
+claude
+
+# Example commands inside Claude Code
+create unit tests for @demo/basic_example_functions.py
+fuzz test the add function in @demo/basic_example_functions.py
+```
+
+<Note>
+Replace paths and API keys with your actual project directories and credentials.
+</Note>
+
+---
+
+By following this guide, you establish a smooth connection between your MCP server and Claude Code, allowing you to harness powerful AI-driven Python testing tools in your development workflow. Feel confident to explore more advanced workflows with your setup now properly integrated.

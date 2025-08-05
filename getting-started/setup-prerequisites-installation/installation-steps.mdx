@@ -1,0 +1,243 @@
+---
+title: "Installation Steps"
+description: "Follow clear, actionable steps to install the MCP server and its dependencies. This includes instructions for using package managers, setting up virtual environments, and ensuring all critical libraries are available on your machine."
+---
+
+# Installation Steps for Python Testing Tools MCP Server
+
+Welcome to the installation guide for the Python Testing Tools MCP Server. This page delivers clear, step-by-step instructions to get the MCP server installed and running on your machine, including setting up dependencies, virtual environments, and required libraries. By following this guide, you'll ensure a smooth installation to start leveraging AI-powered Python test automation.
+
+---
+
+## 1. Prerequisites
+
+Before you begin installation, ensure your environment meets the following prerequisites:
+
+- **Python Version:** Use Python 3.12 as specified in the `.python-version` file.
+- **Operating System Compatibility:** Compatible with common OSes supporting Python 3.12 (Linux, macOS, Windows).
+- **Python Package Manager:** `pip` package manager must be available.
+- **UV Tool:** You'll use the `uv` tool to handle virtual environments and dependencies as configured via `pyproject.toml`.
+- **Environment Variables:** You'll need to set the `GEMINI_API_KEY` environment variable (your Google Gemini API key).
+
+<Tip>
+Setting your API key beforehand is critical to allow the MCP server to utilize Google's Gemini AI services during operation.
+</Tip>
+
+---
+
+## 2. Setup Virtual Environment & Install Dependencies
+
+The recommended approach to install MCP server dependencies and isolate your environment is via the `uv` tool, which ensures reproducible environments using the provided `pyproject.toml`.
+
+### Step 1: Clone the Repository (if not done already)
+
+```bash
+git clone https://github.com/jazzberry-ai/python-testing-mcp.git
+cd python-testing-mcp
+```
+
+### Step 2: Synchronize and Install Dependencies
+
+This command creates a controlled virtual environment and installs all required packages automatically, including the FastMCP framework, BAML client, Gemini AI client, and testing utilities:
+
+```bash
+uv sync
+```
+
+Expected Output:
+- Creation of a virtual environment (if not present)
+- Installation of packages like `fastmcp`, `baml`, `google-generativeai`, `coverage`, and others defined in `pyproject.toml`
+
+<Check>
+If any error occurs here, verify your Python version is 3.12 and that you have network connectivity to PyPI.
+</Check>
+
+---
+
+## 3. Install BAML Python Client
+
+The MCP server depends on the Boundary ML (BAML) client library for structured AI-based test generation.
+
+Run:
+
+```bash
+pip install baml
+```
+
+This ensures the BAML client and `baml-cli` command line tools are installed for AI integration.
+
+---
+
+## 4. Configure Environment Variables
+
+Set the Google Gemini API key environment variable for AI model access:
+
+- On macOS/Linux:
+
+```bash
+export GEMINI_API_KEY="your-api-key-here"
+```
+
+- On Windows (Powershell):
+
+```powershell
+setx GEMINI_API_KEY "your-api-key-here"
+```
+
+<Tip>
+Replace `your-api-key-here` with your actual Google Gemini API key.
+</Tip>
+
+Optionally, specify a Gemini model (default is `gemini-2.5-flash`):
+
+```bash
+export GEMINI_MODEL="gemini-2.5-flash"
+```
+
+---
+
+## 5. Optional: Verify Python Version
+
+Ensure your environment uses Python 3.12 before running the server:
+
+```bash
+python --version
+# Should return Python 3.12.x
+```
+
+If it does not, configure your environment accordingly.
+
+---
+
+## 6. Run the MCP Server
+
+Once dependencies and environment variables are set, start the MCP server:
+
+```bash
+uv run python python_testing_mcp_server.py
+```
+
+You should see terminal messages indicating the server is running and ready to accept test requests.
+
+<Note>
+This command runs the FastMCP server defined in `python_testing_mcp_server.py` which exposes the AI-based Python testing tools.
+</Note>
+
+---
+
+## 7. Verification & Next Steps
+
+To verify a successful installation and get acquainted with the tools:
+
+- Use the demo files in the `demo/` directory for initial test generations.
+- Refer to [Starting the Server](/getting-started/first-run-usage-validation/starting-the-server) to confirm server readiness.
+- Follow the [Quick Validation & First Test Run](/getting-started/first-run-usage-validation/first-successful-validation) guide to run your first test operation.
+
+---
+
+## 8. Common Pitfalls & Troubleshooting
+
+<AccordionGroup title="Common Installation Issues">
+
+<Accordion title="Dependency Installation Fails">
+If `uv sync` or `pip install baml` fails:
+- Verify Python 3.12 is installed and active in your PATH.
+- Check for network restrictions or firewall blocking PyPI.
+- Try upgrading `pip` with `python -m pip install --upgrade pip`.
+</Accordion>
+
+<Accordion title="GEMINI_API_KEY Not Set or Invalid">
+- Confirm environment variable is correctly set for your shell.
+- Restart your terminal or IDE to propagate changes.
+- Verify your API key is active and valid with Google's Gemini service.
+</Accordion>
+
+<Accordion title="Python Version Mismatch">
+- Use pyenv or similar environment manager to install and activate Python 3.12.
+- Adjust your IDE/editor interpreter settings.
+</Accordion>
+
+<Accordion title="Server Fails to Start">
+- Check error logs for missing dependencies.
+- Ensure environment variables are available in your run context.
+- Run in verbose mode if possible to gather more details.
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+## 9. Additional Installation Methods
+
+If you are integrating into Claude Code or prefer alternative startup methods, consider:
+
+- **Claude Code MCP Addition:**
+  ```
+  claude mcp add python_testing_tools --env GEMINI_API_KEY=your-api-key -- uv run python python_testing_mcp_server.py
+  ```
+- **FastMCP Direct Install:**
+  ```
+  uv run fastmcp install python_testing_mcp_server.py --env-var GEMINI_API_KEY=your-api-key
+  ```
+- **Manual Configuration:** Edit `.claude.json` to register your MCP server with custom environment settings.
+
+Refer to the detailed installation in the README for these options.
+
+---
+
+## 10. Summary
+
+Following these installation steps guarantees your MCP server is ready for AI-powered Python test generation. Once installed, proceed to running your first operations and exploring the diverse intelligent testing tools included in this system.
+
+---
+
+## References
+
+- [System Requirements & Prerequisites](/getting-started/setup-prerequisites-installation/system-requirements)
+- [Starting the Server](/getting-started/first-run-usage-validation/starting-the-server)
+- [Quick Validation & First Test Run](/getting-started/first-run-usage-validation/first-successful-validation)
+- [Product Value Proposition Overview](/overview/product-intro-and-architecture/product-value-proposition)
+
+---
+
+##### Repository Reference
+View the GitHub repository for config and code: [python-testing-mcp GitHub](https://github.com/jazzberry-ai/python-testing-mcp)
+
+
+
+---
+
+# Code Snippets Recap
+
+```bash
+git clone https://github.com/jazzberry-ai/python-testing-mcp.git
+cd python-testing-mcp
+uv sync
+export GEMINI_API_KEY="your-api-key-here"
+uv run python python_testing_mcp_server.py
+```
+
+---
+
+# Troubleshooting Example
+If you see "GEMINI_API_KEY environment variable is required" error:
+
+```bash
+export GEMINI_API_KEY="your-api-key"
+# Or on Windows Powershell
+setx GEMINI_API_KEY "your-api-key"
+```
+
+Restart your terminal session and try again.
+
+---
+
+# Best Practices
+- Always isolate your environment with `uv` to avoid dependency conflicts.
+- Keep your API key secure and avoid committing it in source control.
+- Use the demo files under `demo/` for guided initial tests.
+- Regularly update dependencies with `uv sync` if upgrades occur.
+
+---
+
+With these steps, you are primed to harness the full power of AI-enhanced testing workflows using the Python Testing Tools MCP Server.

@@ -1,0 +1,200 @@
+---
+title: "Configuration & API Key Setup"
+description: "Learn how to configure essential environment variables, such as your Gemini API key, and understand optional tuning parameters. This page explains how to securely manage credentials and customize your environment for optimal operation."
+---
+
+# Configuration & API Key Setup
+
+Welcome to the configuration page for the Python Testing Tools MCP Server. This guide helps you securely configure essential environment variables, including your Gemini API key, and explains optional environment tuning parameters. By following these instructions, you'll ensure your server is properly authorized to access AI-powered services and is customized for optimal performance.
+
+---
+
+## 1. Essential Environment Variables
+
+### 1.1 Gemini API Key (`GEMINI_API_KEY`)
+- **Purpose**: Required to authenticate requests to Google's Gemini AI, which powers the AI-driven test generation and fuzz testing features.
+- **Action Steps:**
+  1. Obtain your Gemini API key from your Google Cloud Console or account.
+  2. Set the environment variable in your terminal or shell before running the MCP server:
+
+```bash
+export GEMINI_API_KEY='your-api-key-here'
+```
+
+- **Verification:**
+  - Use `echo $GEMINI_API_KEY` (macOS/Linux) or `echo %GEMINI_API_KEY%` (Windows CMD) to confirm it is set.
+  - The server relies on this key for connectivity; absence or invalid keys will cause authentication errors.
+
+<Warning>
+Never commit or hard-code your API key in source code or public repositories. Always use environment variables or secure secret management.
+</Warning>
+
+### 1.2 Optional Gemini Model (`GEMINI_MODEL`)
+- **Purpose**: To specify which Gemini AI model the server should use.
+- **Default**: `gemini-2.5-flash` if not set.
+- **Usage**:
+
+```bash
+export GEMINI_MODEL='gemini-2.5-flash'
+```
+
+- **Tip**: Customize this only if you have specific model usage preferences or access.
+
+---
+
+## 2. Configuring Environment Variables Securely
+
+### 2.1 Local Shell Configuration
+- Add the export commands to your shell profile for persistence:
+  - Bash (`~/.bashrc` or `~/.bash_profile`)
+  - Zsh (`~/.zshrc`)
+  - Fish (`~/.config/fish/config.fish`)
+
+Example for Bash:
+```bash
+# Gemini AI credentials
+export GEMINI_API_KEY='your-api-key-here'
+export GEMINI_MODEL='gemini-2.5-flash'  # Optional
+```
+Reload profile with:
+```bash
+source ~/.bashrc
+```
+
+### 2.2 Environment Variable in Docker or Other Containers
+- Pass required environment variables on container startup:
+
+```bash
+docker run -e GEMINI_API_KEY='your-api-key-here' ... your-image
+```
+
+### 2.3 Using `.env` Files (if applicable)
+- Store sensitive keys in a `.env` file (excluded from version control)
+- Use tools like `direnv` or `dotenv` to load variables automatically.
+
+---
+
+## 3. Custom Environment Tuning
+
+Beyond the API key, you can fine-tune the environment for advanced scenarios such as debugging or custom client integrations using additional environment variables supported by the BAML runtime and MCP server.
+
+### 3.1 Environment Variable Lazy Loading
+- The system lazily loads environment variables each time a call is made to ensure fresh configuration without server restarts.
+
+### 3.2 Resetting Environment Variables Programmatically
+- The function `reset_baml_env_vars` exists but is deprecated. Avoid using this in new implementations.
+
+---
+
+## 4. How the Configuration Fits into Your Workflow
+
+The configuration you set here allows the MCP server to:
+- Authenticate calls to AI services like Gemini via the Gemini API key
+- Dynamically select AI models if you specify them
+- Securely and flexibly handle credentials without embedding secrets in code
+
+**Immediate Outcome:** Upon correct environment configuration, the server starts cleanly and can process test generation, fuzz inputs, and coverage analysis requests powered by AI models.
+
+---
+
+## 5. Verifying Your Configuration
+
+1. **Check Environment Variables**:
+  - Run `printenv | grep GEMINI` (macOS/Linux) or `set | findstr GEMINI` (Windows PowerShell).
+  - You should see your `GEMINI_API_KEY` and optionally `GEMINI_MODEL` variables.
+
+2. **Start the MCP Server** (see [Starting the Server](./starting-the-server.md)) and monitor for authentication errors.
+
+3. **Test a Simple Operation**:
+  - Use CLI or integration commands to generate a basic unit test.
+  - Successful AI responses confirm proper configuration.
+
+---
+
+## 6. Troubleshooting Configuration Issues
+
+<AccordionGroup title="Common Issues and Solutions">
+<Accordion title="The server reports 'missing or invalid GEMINI_API_KEY'">
+- Ensure you have exported the `GEMINI_API_KEY` in your current shell session.
+- Confirm there are no typos or trailing spaces.
+- If using a container, verify the variable is passed during container runtime.
+- Restart the MCP server after setting the variables.
+</Accordion>
+
+<Accordion title="Using a custom Gemini model does not reflect in requests">
+- Confirm you set `GEMINI_MODEL` before starting the server.
+- Check for typos in the model name.
+- Review logs for warnings about unsupported or unknown model strings.
+</Accordion>
+
+<Accordion title="API calls fail with permission or rate limit errors">
+- Verify your Gemini API key is active and has sufficient quota.
+- Visit your Google Cloud Console for usage statistics and limits.
+- Consider regenerating or rotating your API key if suspected compromised.
+</Accordion>
+
+<Accordion title="API key appears set but not detected by server">
+- Confirm the environment variable is visible to the user or process running the server.
+- Use `env` command or equivalent to inspect environment for the service process.
+- If running the server under a service manager (Systemd, Docker), check environment config there.
+</Accordion>
+</AccordionGroup>
+
+---
+
+## 7. Security Best Practices
+
+- Always secure your API keys and other credentials:
+  - Never commit them to source control.
+  - Use managed secrets storage or encrypted environment management tools for production.
+  - Rotate keys periodically.
+  - Limit API key permissions to only required scopes.
+
+- Monitor usage regularly to detect suspicious activity.
+
+---
+
+## 8. Additional Configuration Resources
+
+- For further details on environment variable handling, see the [System Requirements & Prerequisites](./system-requirements.md) page.
+- For configuration integration in containerized or CI/CD environments, consult the [Integrating MCP Testing Tools with CI/CD Pipelines](../../guides/advanced-usage/integration-ci.md) guide.
+
+---
+
+## 9. Summary
+
+By correctly setting the `GEMINI_API_KEY` and optional tuning parameters, your MCP server gains the required AI authentication and customized behavior for effective Python test automation. Proper configuration without exposing credentials ensures smooth operation and secure integration.
+
+---
+
+## Example: Quick Setup on macOS/Linux Terminal
+
+```bash
+# Set your Gemini API key
+export GEMINI_API_KEY='YOUR_REAL_API_KEY'
+
+# Optionally override the Gemini model
+export GEMINI_MODEL='gemini-2.5-flash'
+
+# Start the MCP server
+uv run python python_testing_mcp_server.py
+```
+
+Check logs for successful startup and readiness.
+
+---
+
+For detailed server start instructions, visit [Starting the Server](./starting-the-server.md).
+
+---
+
+_Last updated: 2024-06
+
+---
+
+# Related Documentation
+- [System Requirements & Prerequisites](./system-requirements.md)
+- [Installation Steps](./installation-steps.md)
+- [Starting the Server](./starting-the-server.md)
+- [Troubleshooting Common Setup Issues](./troubleshooting.md)
+- [Integrating MCP Testing Tools with CI/CD Pipelines](../../guides/advanced-usage/integration-ci.md)

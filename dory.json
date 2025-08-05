@@ -1,0 +1,102 @@
+{
+  "background": {
+    "decoration": "gradient"
+  },
+  "colors": {
+    "dark": "#1E3A8A",
+    "light": "#60A5FA",
+    "primary": "#60A5FA"
+  },
+  "favicon": "/favicon.svg",
+  "fonts": {
+    "family": "Montserrat",
+    "format": "woff2",
+    "source": "https://fonts.gstatic.com/s/googlesansflex/v5/t5sJIQcYNIWbFgDgAAzZ34auoVyXkJCOvp3SFWJbN5hF8Ju1x6sKCyp0l9sI40swNJwGpVd4AZzz0v6lJ4qFXNZhGjLvDSkV4USKMo6qQzwliVdHAy9jxTDHg_ugnAakpwGc-cxgUqDCIUI.woff2"
+  },
+  "icons": {
+    "library": "fontawesome"
+  },
+  "logo": {
+    "dark": "./logo/logo.svg",
+    "light": "./logo/logo.svg"
+  },
+  "name": "Python Testing Tools MCP Server",
+  "navigation": {
+    "tabs": [
+      {
+        "groups": [
+          {
+            "group": "What is Python Testing Tools MCP Server?",
+            "pages": [
+              "overview/product-intro-and-architecture/product-value-proposition",
+              "overview/product-intro-and-architecture/core-architecture-overview"
+            ]
+          },
+          {
+            "group": "Core Concepts, Features, and Use Cases",
+            "pages": [
+              "overview/concepts-features-usecases/core-features-overview",
+              "overview/concepts-features-usecases/foundational-concepts-and-terminology",
+              "overview/concepts-features-usecases/who-and-why"
+            ]
+          }
+        ],
+        "tab": "Overview"
+      },
+      {
+        "groups": [
+          {
+            "group": "Setup \u0026 Installation",
+            "pages": [
+              "getting-started/setup-prerequisites-installation/system-requirements",
+              "getting-started/setup-prerequisites-installation/installation-steps",
+              "getting-started/setup-prerequisites-installation/configuration-setup"
+            ]
+          },
+          {
+            "group": "First Run \u0026 Usage Validation",
+            "pages": [
+              "getting-started/first-run-usage-validation/starting-the-server",
+              "getting-started/first-run-usage-validation/connecting-integrations",
+              "getting-started/first-run-usage-validation/first-successful-validation",
+              "getting-started/first-run-usage-validation/troubleshooting"
+            ]
+          }
+        ],
+        "tab": "Getting Started"
+      },
+      {
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "guides/getting-started/installation-setup",
+              "guides/getting-started/first-tests"
+            ]
+          },
+          {
+            "group": "Core Testing Workflows",
+            "pages": [
+              "guides/core-workflows/guide-unit-testing",
+              "guides/core-workflows/guide-fuzz-testing",
+              "guides/core-workflows/guide-coverage-testing",
+              "guides/core-workflows/guide-mutation-testing"
+            ]
+          },
+          {
+            "group": "Advanced Use Cases \u0026 Integration",
+            "pages": [
+              "guides/advanced-usage/integration-ci",
+              "guides/advanced-usage/advanced-demo-usecases"
+            ]
+          }
+        ],
+        "tab": "Guides"
+      }
+    ]
+  },
+  "styling": {
+    "codeblocks": "dark",
+    "eyebrows": "breadcrumbs"
+  }
+}

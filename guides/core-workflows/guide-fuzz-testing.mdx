@@ -1,0 +1,160 @@
+---
+title: "Fuzz Testing Functions with AI-Generated Inputs"
+description: "Guide to stress-testing your Python functions with intelligent, diverse, and boundary-pushing inputs using the fuzz testing tool. Learn how to target individual functions, interpret crash reports, and use results to improve robustness."
+---
+
+# Fuzz Testing Functions with AI-Generated Inputs
+
+## Workflow Overview
+
+### Task Description
+This guide helps you confidently use the Python Testing Tools MCP Server's fuzz testing tool to stress-test individual Python functions. By generating diverse and challenging inputs automatically through AI, you will uncover hidden bugs, improve function robustness, and gain actionable insights into edge cases and crash scenarios.
+
+### Prerequisites
+- Python Testing Tools MCP Server installed and running (refer to [Installation and Initial Setup](/guides/getting-started/installation-setup))
+- Valid Gemini API key configured (see [Configuration & API Key Setup](/getting-started/setup-prerequisites-installation/configuration-setup))
+- Your Python project accessible locally with the target function implemented
+- Basic understanding of running MCP server commands or using Claude Code integration for command execution
+
+### Expected Outcome
+By following this guide, you will:
+- Run intelligent fuzz testing on a specified function
+- Obtain a detailed report about any crashes triggered by edge, malformed, or boundary inputs
+- Understand how to interpret results to strengthen your function's error handling and robustness
+
+### Time Estimate
+Approximately 5-10 minutes per function test, depending on function complexity
+
+### Difficulty Level
+Beginner to Intermediate – straightforward invocation with guided interpretation
+
+---
+
+## Step-by-Step Instructions
+
+### 1. Identify the Target Function
+a. Choose the Python function you want to fuzz test.
+b. Ensure the function is in a Python file accessible to the MCP server.
+
+### 2. Prepare Your Environment
+a. Confirm your MCP server is running using the command:
+```bash
+uv run python python_testing_mcp_server.py
+```
+b. Verify `GEMINI_API_KEY` environment variable is set:
+```bash
+export GEMINI_API_KEY="your-api-key-here"
+```
+c. Optionally, use Claude Code or your preferred environment integrated with MCP for command execution.
+
+### 3. Run Fuzz Testing Command
+- Using a terminal with MCP server commands support or Claude Code, run the following to fuzz test your function:
+```bash
+fuzz test the <function_name> function in @<path-to-your-python-file>
+```
+Example:
+```bash
+fuzz test the add function in @demo/basic_example_functions.py
+```
+
+### 4. Review the Fuzz Testing Output
+- The tool generates 20 intelligently crafted fuzz inputs targeting normal, boundary, malformed, and unusual cases.
+- It executes the function with these inputs, catching any exceptions or crashes.
+- Output will indicate:
+  - Number of test cases executed
+  - Whether any crashes occurred
+  - Details of each crash including the input that caused it and the error traceback
+
+### 5. Analyze Crash Reports
+- For each crash, review the input and traceback details carefully.
+- Determine if these reveal:
+  - Missing input validation
+  - Insufficient error handling
+  - Unexpected behavior with edge data
+
+### 6. Enhance Your Function
+- Use crash insights to:
+  - Add necessary input checks
+  - Handle unexpected data types or values
+  - Secure your code against potential runtime failures
+
+### 7. Repeat Testing
+- After improving your function, rerun fuzz testing to verify that previously found issues are resolved and no new issues appear.
+
+---
+
+## Example Scenario
+
+Suppose you have the following simple `add` function in `demo/basic_example_functions.py`:
+
+```python
+def add(a, b):
+    return a + b
+```
+
+Command:
+```bash
+fuzz test the add function in @demo/basic_example_functions.py
+```
+
+Possible output snippet:
+```
+Warning: Skipped 1 fuzzing inputs due to parsing errors
+Fuzz testing completed for 'add'. No crashes found in 19 test cases.
+```
+
+Or if a crash is found:
+```
+Fuzz testing for 'add' found 2 crash(es):
+
+- Input: None
+  Error: Traceback (most recent call last):
+  TypeError: unsupported operand type(s) for +: 'NoneType' and 'int'
+
+- Input: 'string'
+  Error: Traceback (most recent call last):
+  TypeError: can only concatenate str (not "int") to str
+```
+
+Use this information to add type and value checks in your `add` function.
+
+---
+
+## Troubleshooting & Tips
+
+### Common Issues
+- **Function Not Found:** Ensure the function name and file path are correct and the function is not nested or dynamically created.
+- **No Valid Inputs Parsed:** If BAML output includes unparsable fuzzing inputs, consider updating your code or retrying.
+- **Server or API Key Errors:** Confirm that the MCP server is running and `GEMINI_API_KEY` is valid.
+- **Crash Reports Overwhelming:** Focus on unique crashes and prioritize those involving common input types.
+
+### Best Practices
+- Always test functions in isolation to get precise crash contexts.
+- Combine fuzz testing with unit and coverage tests for comprehensive validation.
+- Regularly update your Gemini API key and monitor quota usage.
+- Use the `ast.literal_eval()` safe parsing method built into the server for security.
+
+### Performance Considerations
+- Fuzz testing generates and runs 20 test inputs – expect some processing time.
+- Larger functions or those with complex dependencies may increase runtime.
+- Run fuzz tests on critical functions regularly as part of CI to catch regressions early.
+
+### Alternative Approaches
+- For functions requiring complex setup, consider wrapping them or mocking dependencies before fuzz testing.
+- You can extend or customize fuzz inputs by modifying BAML prompts in advanced scenarios.
+
+---
+
+## Next Steps & Related Content
+
+- Proceed to learn about **[Automating Python Unit Test Generation](/guides/core-workflows/guide-unit-testing)** to complement fuzz testing.
+- Explore **[Generating Comprehensive Coverage-Driven Test Suites](/guides/core-workflows/guide-coverage-testing)** for thorough path testing.
+- Integrate fuzz testing into CI pipelines with **[Integrating MCP Testing Tools with CI/CD Pipelines](/guides/advanced-usage/integration-ci)**.
+- Refer to **[Troubleshooting Common Setup Issues](/getting-started/first-run-usage-validation/troubleshooting)** if you encounter errors during setup or testing.
+
+---
+
+## Summary
+This guide empowers you to perform effective fuzz testing on individual Python functions using AI-generated diverse inputs. By systematically running tests and analyzing crash reports, you improve your code's resilience and uncover hidden vulnerabilities before they reach production.
+
+---

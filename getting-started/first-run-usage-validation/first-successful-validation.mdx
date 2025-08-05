@@ -1,0 +1,137 @@
+---
+title: "Quick Validation & First Test Run"
+description: "Validate your setup by running quick test commands using demo files, confirming successful server operation and tool functionality. This page provides copy-paste commands and highlights what outputs to look for, ensuring early success."
+---
+
+# Quick Validation & First Test Run
+
+Welcome to your first milestone with the Python Testing Tools MCP Server. This guide ensures your environment, server, and essential tools are operating correctly by walking you through quick validation steps using demo files and simple test commands.
+
+You will find ready-to-use commands you can copy-paste directly into your terminal to confirm the server is running and the tools respond as expected. Alongside, we explain what outputs to expect and how to interpret them—enabling you to quickly confirm early success and build confidence in your setup.
+
+---
+
+## 1. Purpose of This Page
+
+This page focuses solely on validating and testing your Python Testing Tools MCP Server installation by running quick test commands with built-in demo files.
+
+It is **not** a comprehensive tutorial on all product features but a fast check to confirm the server and client are communicating properly.
+
+## 2. Prerequisites
+
+Before proceeding, ensure you have completed the following:
+
+- **Server Installed and Running**: Follow the [Installation Steps](../setup-prerequisites-installation/installation-steps) page and start the server as detailed in the [Starting the Server](../first-run-usage-validation/starting-the-server) guide.
+- **Environment Variables Set**: Verify your `GEMINI_API_KEY` is configured correctly. See the [Configuration & API Key Setup](../setup-prerequisites-installation/configuration-setup).
+- **Demo Files Available**: The demo Python files located in the `demo/` directory of your project repository are present for use in test commands.
+
+<Tip>
+If you have not started the server yet, launch it now. A quick check is:
+```bash
+uv run python python_testing_mcp_server.py
+```
+You should see logs indicating the server is running and ready.
+</Tip>
+
+---
+
+## 3. Running Quick Test Commands
+
+You will use demo files under the `demo/` folder to validate the core tools. These commands showcase that the AI-powered tools respond, process input, and generate outputs as expected.
+
+### 3.1 Generate Unit Tests for a Demo File
+
+This command requests the unit test generation tool to create tests for the simple functions in the `basic_example_functions.py` demo.
+
+```bash
+create unit tests for @demo/basic_example_functions.py
+```
+
+**Expected Outcome:**
+- The server returns a generated test suite.
+- You should see a message or output text indicating test cases were created.
+- No errors related to connection or request failures.
+
+### 3.2 Perform Fuzz Testing on a Specific Function
+
+Fuzz testing exercises a function with diverse inputs to verify robustness.
+
+```bash
+fuzz test the add function in @demo/basic_example_functions.py
+```
+
+**Expected Outcome:**
+- A list of generated fuzz inputs with their evaluation results.
+- No fatal errors or timeouts.
+
+### 3.3 Generate Coverage Tests for Advanced Logic
+
+```bash
+generate coverage tests for @demo/advanced_algorithms.py
+```
+
+**Expected Outcome:**
+- A detailed coverage test file is returned, showing complex branch and loop coverage.
+- Outputs will include coverage scenarios and imported dependencies.
+
+### 3.4 Run Mutation Testing on a Demo File
+
+Mutation testing analyzes test suite quality by introducing code changes. This command runs the mutation tester:
+
+```bash
+run mutation testing on @demo/advanced_algorithms.py
+```
+
+**Expected Outcome:**
+- A mutation score report.
+- Lists of survived mutations, test gaps, and recommendations.
+
+---
+
+## 4. Interpreting the Outputs
+
+Outputs from these commands typically include:
+
+- **Success Indicators**: Confirmation messages, generated test code snippets, or detailed JSON-like reports.
+- **Error Messages**: Network or authentication issues, which indicate setup or environment problems.
+
+Pay special attention to error feedback to identify configuration errors early.
+
+---
+
+## 5. Troubleshooting Tips
+
+- **No Response or Timeout**: Verify the server is running and reachable.
+- **Authentication Errors**: Double-check your `GEMINI_API_KEY` environment variable.
+- **Command Not Recognized**: Make sure you are running commands in the correct client environment (Claude Code or CLI).
+- **Demo Files Missing**: Confirm you have cloned the repository or downloaded the `demo/` folder.
+
+See the [Troubleshooting Common Setup Issues](../first-run-usage-validation/troubleshooting) for more detailed help.
+
+---
+
+## 6. Next Steps
+
+Once you have successfully validated your setup with these quick tests:
+
+- Explore deeper guides such as [Running Your First Intelligent Python Tests](../../guides/getting-started/first-tests) for detailed usage.
+- Study the [Core Features at a Glance](../../overview/concepts-features-usecases/core-features-overview) to understand capabilities.
+- Try integration tutorials connecting to Claude Code in [Connecting to Claude Code & Other Integrations](../first-run-usage-validation/connecting-integrations).
+
+---
+
+## Appendix: Ready-to-Use Command Examples
+
+| Purpose                   | Command                                                                                         |
+|---------------------------|------------------------------------------------------------------------------------------------|
+| Generate Unit Tests        | `create unit tests for @demo/basic_example_functions.py`                                       |
+| Fuzz Test a Function       | `fuzz test the add function in @demo/basic_example_functions.py`                              |
+| Generate Coverage Tests    | `generate coverage tests for @demo/advanced_algorithms.py`                                    |
+| Run Mutation Testing       | `run mutation testing on @demo/advanced_algorithms.py`                                        |
+
+
+---
+
+If you encounter issues or want to deepen your understanding, refer to the detailed sections in the documentation linked throughout this guide.
+
+Thank you for choosing Python Testing Tools MCP Server. Your journey toward intelligent testing begins here!
