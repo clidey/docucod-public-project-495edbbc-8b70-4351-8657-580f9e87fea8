@@ -3,4 +3,253 @@ title: "Running Your First Intelligent Python Tests"
 description: "Learn how to execute your initial unit, fuzz, or coverage tests on a sample Python file. This guide demonstrates the full workflow—from sending a test command to reviewing results—using both command-line and Claude Code examples."
 ---
 
-*This page will automatically be generated from the codebase*
+# Running Your First Intelligent Python Tests
+
+Welcome to the practical guide where you'll learn how to run your initial unit tests, fuzz tests, and coverage tests on a sample Python file using the Python Testing Tools MCP Server. This guide walks you through a seamless workflow—from issuing test commands to interpreting the generated results—using both command-line and Claude Code interfaces.
+
+---
+
+## 1. Workflow Overview
+
+### What You'll Accomplish
+You will execute your first AI-powered Python tests against sample code, including:
+- Generating comprehensive **unit tests**
+- Creating **fuzz test inputs** to challenge code robustness
+- Producing **coverage-driven tests** targeting maximum code path execution
+
+### Prerequisites
+Before proceeding, ensure you have:
+- Installed and configured the Python Testing Tools MCP Server (see [Installation and Initial Setup](../installation-setup))
+- Set your `GEMINI_API_KEY` environment variable properly
+- Launched the MCP Server locally or connected through Claude Code
+- Access to sample Python files (e.g., the demo files included in the project)
+
+### Expected Outcome
+By the end of this guide, you will have:
+- Generated actual Python test files for a sample source file
+- Viewed the structure and content of auto-generated tests
+- Run snippets to validate fuzz input generation
+- Understood how coverage test commands produce full path coverage
+
+### Estimated Time
+Approximately 15-25 minutes, depending on your familiarity with the environment and the size of the sample file.
+
+### Difficulty Level
+Beginner to Intermediate — no prior AI integration experience required
+
+---
+
+## 2. Step-by-Step Instructions
+
+### Step 1: Choose a Sample Python File
+
+Select a Python file from the `demo/` directory to run tests against, for example:
+
+```bash
+@demo/basic_example_functions.py
+```
+
+This file contains simple functions ideal for your first test run.
+
+### Step 2: Generate Unit Tests from Command Line
+
+Run the following command in Claude Code or your terminal connected to the MCP Server:
+
+```bash
+create unit tests for @demo/basic_example_functions.py
+```
+
+**What happens:**
+- The server processes the source file.
+- AI generates 4-6 test cases per function covering normal, edge, and error cases.
+- A test file named `test_basic_example_functions.py` is created alongside the source.
+
+
+### Step 3: Review the Generated Unit Test File
+
+Navigate to the directory containing the source file and open the test file. It will:
+- Import the tested module
+- Contain a subclass of `unittest.TestCase`
+- Have multiple `test_` methods, each targeting a specific scenario
+
+Example snippet:
+
+```python
+import unittest
+import basic_example_functions
+
+class TestBasicExampleFunctions(unittest.TestCase):
+    def test_add_positive_numbers(self):
+        result = basic_example_functions.add(2, 3)
+        self.assertEqual(result, 5)
+
+    def test_add_raises_type_error(self):
+        with self.assertRaises(TypeError):
+            basic_example_functions.add('two', 'three')
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+### Step 4: Execute Fuzz Testing on a Specific Function
+
+Use this command to generate and view diverse fuzz inputs for a given function:
+
+```bash
+fuzz test the add function in @demo/basic_example_functions.py
+```
+
+**Results include:**
+- 20 varied inputs like large numbers, empty values, malformed data
+- Edge cases designed to probe boundary conditions
+
+You can run these fuzz inputs in your own test harness or use them to augment your test suite.
+
+### Step 5: Generate Coverage Tests
+
+Run this command to produce tests targeting full code coverage for all branches, loops, and exception paths:
+
+```bash
+generate coverage tests for @demo/basic_example_functions.py
+```
+
+**What to expect:**
+- AI analyzes function control flow using AST
+- Tests cover all conditionals, loops (zero, one, many iterations), exceptions, and return paths
+- Coverage measurement tools report achieved coverage
+
+The generated tests come with descriptive names, coverage-specific comments, and are arranged to isolate each test path.
+
+### Step 6: Review and Run Coverage Tests
+
+Open the generated coverage test file, typically `test_basic_example_functions.py` (may coexist or be a separate coverage-specific file).
+- Look for tests named like `test_branch_condition_true`, `test_loop_zero_iterations`.
+- Each test includes assertions and comments explaining the tested path.
+
+Run the tests with:
+
+```bash
+python -m unittest test_basic_example_functions.py
+```
+
+Verify the output for passing tests and use `coverage.py` or similar to confirm full coverage.
+
+---
+
+## 3. Practical Examples and Command Snippets
+
+### Quick Commands for Your First Tests
+```bash
+# Generate unit tests
+create unit tests for @demo/basic_example_functions.py
+
+# Generate fuzz inputs for a specific function
+fuzz test the add function in @demo/basic_example_functions.py
+
+# Create coverage tests
+generate coverage tests for @demo/basic_example_functions.py
+```
+
+### Sample Output: Unit Test Names
+- `test_add_positive_numbers`
+- `test_add_zero_inputs`
+- `test_add_raises_type_error`
+
+### Sample Fuzz Inputs
+- `0`
+- `-1`
+- `999999999999999`
+- `''` (empty string)
+- `None`
+
+### Verifying Outputs
+Check that generated test files are syntactically correct by opening them in your editor.
+Run unit tests with `unittest`, confirm all pass.
+
+---
+
+## 4. Troubleshooting and Best Practices
+
+<AccordionGroup title="Common Issues and Tips">
+<Accordion title="No Functions Found in Source File">
+Ensure your Python file contains valid function definitions. Empty files or scripts without functions won't generate tests.
+</Accordion>
+<Accordion title="Unit Test Generation Fails or Returns Errors">
+Check the source file syntax for errors.
+Verify your `GEMINI_API_KEY` is set and the MCP Server is running.
+Review logs for hints on AI service unavailability.
+</Accordion>
+<Accordion title="Fuzz Inputs Include Unexpected Values or Fail Parsing">
+Remember inputs are limited to safe Python literals that can be parsed with `ast.literal_eval()`.
+Large numbers represent infinity-like behavior; NaN scenarios might use `None` or unusual types.
+</Accordion>
+<Accordion title="Coverage Tests Don’t Achieve Full Branch Coverage">
+Some complex branches might require manual review.
+Try rerunning coverage generation or increasing testing iterations.
+Verify the `coverage.py` tool reports correctly.
+</Accordion>
+</AccordionGroup>
+
+### Best Practices
+- Always review AI-generated code for correctness before integrating into CI pipelines.
+- Use the demo files in ascending complexity to gradually expand your testing sophistication.
+- Combine unit, fuzz, and coverage tests to build a robust test suite.
+- Leverage descriptive test names to improve maintainability.
+
+---
+
+## 5. Next Steps & Related Resources
+
+### What to Explore Next
+- **Automating Unit Test Generation**: Deep dive into [Automating Python Unit Test Generation](../core-workflows/guide-unit-testing)
+- **Fuzz Testing Strategies**: Advanced fuzz testing with [Fuzz Testing Functions with AI-Generated Inputs](../core-workflows/guide-fuzz-testing)
+- **Maximizing Test Coverage**: Explore [Generating Comprehensive Coverage-Driven Test Suites](../core-workflows/guide-coverage-testing)
+- **Mutation Testing for Test Quality**: Learn about mutation testing with [Applying Mutation Testing for Test Quality Analysis](../core-workflows/guide-mutation-testing)
+
+### Useful Links
+- [Setup & Installation](../../getting-started/setup-prerequisites-installation/installation-steps)
+- [Configuration & API Key Setup](../../getting-started/setup-prerequisites-installation/configuration-setup)
+- [Starting the Server](../../getting-started/first-run-usage-validation/starting-the-server)
+- [Connecting Integrations (Claude Code)](../../getting-started/first-run-usage-validation/connecting-integrations)
+- [Troubleshooting Common Setup Issues](../../getting-started/first-run-usage-validation/troubleshooting)
+
+
+---
+
+## Appendix: Sample Command-Line Session
+```bash
+# Launch server (if not started already)
+uv run python python_testing_mcp_server.py
+
+# Generate unit tests
+create unit tests for @demo/basic_example_functions.py
+
+# Fuzz test function 'add'
+fuzz test the add function in @demo/basic_example_functions.py
+
+# Generate coverage tests for full path coverage
+generate coverage tests for @demo/basic_example_functions.py
+
+# Run the test suite using unittest
+python -m unittest test_basic_example_functions.py
+```
+
+This quick preview shows the natural, command-driven flow to get real feedback from the MCP server using your sample Python code.
+
+---
+
+## Summary
+You now know how to run your first intelligent automated tests using the Python Testing Tools MCP Server. By following this guide, you can quickly generate, view, and execute unit tests, fuzz tests, and coverage tests on your Python files, gaining powerful AI-driven test automation that saves time and improves code quality.
+
+
+---
+
+<Check>
+Remember to always ensure your MCP Server is running and `GEMINI_API_KEY` is configured before running test commands.
+</Check>
+
+
+---
+
+---
+
