@@ -3,4 +3,171 @@ title: "Automating Python Unit Test Generation"
 description: "A deep dive into using the unit test generator on your codebase. Covers best practices for creating comprehensive and structured test suites automatically, including handling of edge cases and exceptions. Example-driven with walkthroughs for both basic and moderately complex source files."
 ---
 
-*This page will automatically be generated from the codebase*
+# Automating Python Unit Test Generation
+
+## Workflow Overview
+
+### Task Description
+This guide walks you through the process of using the Python Testing Tools MCP Server's unit test generator to automatically create comprehensive and well-structured unit test suites for your Python codebases. It focuses specifically on generating tests by analyzing your source functions and harnessing AI-powered capabilities to cover normal cases, edge cases, and exception handling scenarios.
+
+### Prerequisites
+- You have the Python Testing Tools MCP Server installed and running.
+- The `baml` Python package is installed (`pip install baml`).
+- Familiarity with basic Python testing using the `unittest` framework.
+- Access to your Python source file(s) requiring unit tests.
+
+### Expected Outcome
+By following this guide, you will generate a fully formed unittest test file for each Python module you target. Each test suite:
+- Contains multiple test cases per function (4-6 by default).
+- Covers positive, edge, and error scenarios.
+- Uses proper `self.assertRaises()` context for exceptions.
+- Has appropriate imports and follows conventions for test class names.
+
+This process drastically reduces manual test writing effort while ensuring your code is reliably validated.
+
+### Time Estimate
+Depending on the size and complexity of your source file, test generation typically completes within a few seconds to a couple of minutes.
+
+### Difficulty Level
+Beginner to Intermediate. No deep AI knowledge or complex setup is required, but familiarity with Python unittest structure is beneficial.
+
+---
+
+## Step-by-Step Instructions
+
+### Step 1: Prepare Your Python Source File
+Ensure your Python file contains well-formed function definitions you want to test.
+
+### Step 2: Execute the Unit Test Generator
+Use the provided utility function `generate_unit_tests` from the `tools.unit_test_generator` module.
+
+```python
+from tools.unit_test_generator import generate_unit_tests
+
+result_message = generate_unit_tests('path/to/your_file.py')
+print(result_message)
+```
+
+**Outcome**: The tool parses your source functions, submits them to the AI-powered BAML client, and produces a new test file `test_your_file.py` in the same directory.
+
+### Step 3: Understand the Generated Test File
+Open the generated `test_your_file.py` file. It includes:
+- Appropriate imports, including your original module.
+- A test class named `TestYourFile` matching your module name.
+- Multiple test methods per function, each named with the `test_` prefix.
+- Properly indented test bodies with assertions and error handling blocks.
+
+### Step 4: Review and Run the Tests
+Run your test suite using:
+
+```bash
+python -m unittest test_your_file.py
+```
+
+Verify all tests pass and cover the expected scenarios.
+
+### Step 5: Iterate and Refine
+If needed, you can run the generator again after updating your source code to regenerate tests.
+
+---
+
+## Practical Tips and Best Practices
+
+- **Function Extraction**: The generator automatically detects all top-level functions. For methods inside classes, add them manually or extend tooling.
+- **Test Naming**: The tool ensures test method names begin with `test_`. If AI-generated names lack this, it prefixes automatically.
+- **Indentation Handling**: The generator smartly preserves indentation, especially within `self.assertRaises` context blocks.
+- **Module Prefixing**: Calls inside test bodies that match source functions are automatically prefixed with the module name to avoid namespace errors.
+- **Error Handling**: If AI generation fails for any function, a placeholder test is created with a TODO comment.
+
+---
+
+## Example Usage and Generated Output
+
+### Example Source Function
+```python
+# demo/basic_example_functions.py
+
+def add(a, b):
+    return a + b
+
+def divide(a, b):
+    if b == 0:
+        raise ValueError('division by zero')
+    return a / b
+```
+
+### Sample Generated Test Snippet
+```python
+import unittest
+import basic_example_functions
+
+class TestBasicExampleFunctions(unittest.TestCase):
+
+    def test_add_positive_numbers(self):
+        self.assertEqual(basic_example_functions.add(2, 3), 5)
+
+    def test_add_with_zero(self):
+        self.assertEqual(basic_example_functions.add(0, 5), 5)
+
+    def test_divide_normal_case(self):
+        self.assertEqual(basic_example_functions.divide(10, 2), 5)
+
+    def test_divide_by_zero_raises(self):
+        with self.assertRaises(ValueError):
+            basic_example_functions.divide(10, 0)
+
+if __name__ == '__main__':
+    unittest.main()
+```
+
+---
+
+## Troubleshooting & Tips
+
+<AccordionGroup title="Common Issues and Resolutions">
+<Accordion title="No Functions Found to Generate Tests">
+- Ensure your source file contains syntactically correct Python function definitions.
+- Check for correct file path and permissions.
+- Confirm the file is not empty.
+</Accordion>
+<Accordion title="AI Generation Failure for Specific Functions">
+- The tool falls back to placeholder tests with TODO comments.
+- Review the error message in the placeholder comment for clues.
+- Simplify or refactor complex functions and retry.
+- Make sure environment variables like `GEMINI_API_KEY` are set correctly.
+</Accordion>
+<Accordion title="Indentation or Import Errors in Generated Tests">
+- The generator attempts intelligent indentation, but manual tweaks may be needed in rare cases.
+- Verify you have the same module name as in your source path.
+- Check for circular imports or name collisions.
+</Accordion>
+</AccordionGroup>
+
+<Tip>
+Always run `unittest` or your chosen test runner on generated files before integrating them into CI pipelines to catch edge case issues early.
+</Tip>
+
+---
+
+## Next Steps & Related Content
+
+- Explore [Fuzz Testing Functions with AI-Generated Inputs](/guides/core-workflows/guide-fuzz-testing) to stress test your functions with diverse inputs.
+- Learn to generate [Comprehensive Coverage-Driven Test Suites](/guides/core-workflows/guide-coverage-testing) for higher confidence in code quality.
+- Use [Mutation Testing](/guides/core-workflows/guide-mutation-testing) to analyze and improve your test suite's effectiveness.
+- For setup and initial runs, see [Running Your First Intelligent Python Tests](/guides/getting-started/first-tests).
+
+---
+
+## Additional References
+
+- Source & Implementation Code: See the detailed `tools/unit_test_generator.py` for usage patterns.
+- BAML & Gemini AI Integration: Understand how AI is utilized for test generation in `baml_src/main.baml` and client modules.
+- Error Handling and Best Practices: Covered in documentation on [Troubleshooting Common Setup Issues](/getting-started/first-run-usage-validation/troubleshooting).
+
+---
+
+Use the AI-accelerated unit test generator to save time, enhance test coverage, and maintain consistent testing standards across Python projects.
+
+---
+
+© Python Testing Tools MCP Server Documentation
