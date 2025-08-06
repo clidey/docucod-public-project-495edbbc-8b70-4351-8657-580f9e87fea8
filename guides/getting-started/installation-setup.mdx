@@ -216,25 +216,30 @@ Expected behavior: The MCP server processes requests and outputs test code or te
 ## Troubleshooting Common Issues
 
 <AccordionGroup title="Common Setup Issues"> 
-<Accordion title="Dependency Installation Fails">If `uv sync` fails:
+<Accordion title="Dependency Installation Fails">
+
+If `uv sync` fails:
 - Verify your Python version meets requirements.
 - Update `uv` to the latest version.
 - Check network connectivity and repository availability.
 - Review error messages for missing system packages and install them.
 </Accordion>
 
-<Accordion title="GEMINI_API_KEY Not Set or Invalid">Ensure you have exported the key in the correct shell environment.
+<Accordion title="GEMINI_API_KEY Not Set or Invalid">
+Ensure you have exported the key in the correct shell environment.
 - On terminal restart, confirm the key is still set.
 - Review permissions or validity of your Gemini API key.
 </Accordion>
 
-<Accordion title="Server Does Not Start or Crashes">Check that no other process is using the same port.
+<Accordion title="Server Does Not Start or Crashes">
+Check that no other process is using the same port.
 - Review server logs for error messages.
 - Confirm all dependencies installed correctly.
 - Try running with elevated privileges if permission errors occur.
 </Accordion>
 
-<Accordion title="Claude Code Does Not Connect to MCP Server">Verify correct MCP server name and path in your configuration.
+<Accordion title="Claude Code Does Not Connect to MCP Server">
+Verify correct MCP server name and path in your configuration.
 - Re-run `claude mcp add` with correct environment variable.
 - Restart Claude Code after configuration changes.
 - Confirm firewall or antivirus settings aren’t blocking communication.
